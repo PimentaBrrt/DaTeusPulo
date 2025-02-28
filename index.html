@@ -14,12 +14,29 @@
     <div class="container">
 
         <h1>Bem-vindo ao "Dá teus pulo!"</h1>
-        <p>Pressione o botão abaixo para gerar uma frase aleatória e resolver um desafio criativo!</p>
+        <p>Pressione o botão abaixo para obter uma frase aleatória dentre mais de 1500 opções e resolver um desafio criativo!</p>
 
-        <button id="generate-button">Gerar Frase Aleatória</button>
+        <button type="button" onclick=frase()>Obter Frase Aleatória</button>
         
-        <p id="story"></p>
+        <p class="gerada" id="historia"></p>
 
+    </div>
+
+    <button class="botao-regras-fixo" onclick="abrirModal()"> Regras</button>
+
+    <div id="modalRegras" class="modal">
+        <div class="modal-content"> 
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2>Regras do Jogo</h2>
+            <p>
+                As regras do jogo são simples:
+            </p>
+            <ul>
+                <li>Ao clicar no botão, uma frase aleatória dentre mais de 1500 diferentes será exibida. Tente resolver o problema da forma mais criativa possível!</li>
+                <li>Você pode jogar tanto sozinho, para estimular sua criatividade resolvendo problemas malucos, quanto acompanhado.</li>
+                <li>Jogando em grupos, vocês podem fazer da forma que quiserem, como por exemplo, realizando rodadas, nas quais cada um dos participantes dá uma solução criativa diferente e, ao fim da rodada, é votada a melhor solução para o problema, com o jogador ganhando um ponto.</li>
+            </ul>
+        </div>
     </div>
     
     <script src="script.js"></script>
