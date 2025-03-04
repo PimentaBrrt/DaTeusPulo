@@ -44,7 +44,6 @@ button:hover {
     color: #b70f0f;
 }
 
-/* Estilização do pop-up modal */
 .modal {
     display: none;
     position: fixed;
@@ -58,7 +57,7 @@ button:hover {
     justify-content: center;
     align-items: center;
     padding: 10px;
-    box-sizing: border-box; /* Evita cortes laterais */
+    box-sizing: border-box; 
 }
 
 /* Conteúdo do modal */
@@ -66,22 +65,21 @@ button:hover {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 80%; /* Usa 80% da largura para evitar cortes */
-    max-width: 500px; /* Define um tamanho máximo */
-    max-height: 80vh; /* Mantém altura máxima para evitar cortes verticais */
-    overflow-y: auto; /* Ativa rolagem caso o conteúdo seja grande */
+    width: 80%; 
+    max-width: 500px; 
+    max-height: 80vh; 
+    overflow-y: auto; 
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease-in-out;
-    position: relative; /* Garante que o botão "X" fique corretamente posicionado */
-    box-sizing: border-box; /* Evita cortes no conteúdo */
+    position: relative; 
+    box-sizing: border-box; 
 }
 
-/* Botão de fechar */
 .close {
     position: absolute;
     top: 10px;
-    right: 10px; /* Ajusta a posição para garantir espaço */
+    right: 10px; 
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
@@ -94,7 +92,6 @@ button:hover {
     color: red;
 }
 
-/* Animação de entrada */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -106,16 +103,15 @@ button:hover {
     }
 }
 
-/* Ajustes para telas menores */
 @media (max-width: 480px) {
     .modal-content {
-        width: 90%; /* Usa quase toda a largura da tela sem cortar */
+        width: 90%; 
         padding: 20px;
         font-size: 14px;
     }
 
     .close {
-        right: 15px; /* Ajuste fino para garantir espaço */
+        right: 15px; 
         font-size: 26px;
     }
 }
