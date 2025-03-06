@@ -1689,10 +1689,18 @@ window.onclick = function(event) {
     }
 };
 
-window.addEventListener('click', function(event) {
+document.getElementById("botaoRegras").addEventListener("click", function(event) {
+    let modal = document.getElementById("modalRegras");
+    modal.style.display = "block";
+
+    event.stopPropagation();
+});
+
+window.addEventListener("click", function(event) {
     let modal = document.getElementById("modalRegras");
     let modalContent = document.querySelector("#modalRegras .modal-content");
-    if (event.target === modal && !modalContent.contains(event.target)) {
+
+    if (!modalContent.contains(event.target)) {
         modal.style.display = "none";
     }
 });
