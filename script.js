@@ -69,7 +69,7 @@ function frase() {
         "Uma sereia precisa participar de uma corrida de patins.",
         "Um elefante quer aprender a fazer pole dance sem quebrar o poste.",
         "Uma raposa quer abrir uma loja de hambúrgueres vegetarianos.",
-        "69",
+        "Uma frigideira sonha em ser utilizada para esfriar alimentos.",
         "Um dinossauro quer usar um smartphone, mas tem braços muito curtos.",
         "Um ninja invisível quer se tornar famoso no Instagram.",
         "Uma geladeira quer se tornar um forno sem explodir.",
