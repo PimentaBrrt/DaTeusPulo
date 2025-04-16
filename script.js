@@ -1,4 +1,269 @@
-let frases = [
+let jogadores = [];
+let poderes = [
+    {
+        id: 1,
+        nome: "Fortuna",
+        descricao: "Duplica os pontos da rodada. Deve ser usado antes da rodada começar."
+    },
+    {
+        id: 2,
+        nome: "Vampirismo",
+        descricao: "Se vencer a rodada, retira 1 ponto de outro jogador à sua escolha."
+    },
+    {
+        id: 3,
+        nome: "Duelo",
+        descricao: "Desafia um jogador para um 1x1. Quem vencer, ganha a rodada e rouba 1 ponto do outro."
+    },
+    {
+        id: 4,
+        nome: "Silenciar",
+        descricao: "Escolhe um jogador que deverá apresentar sua solução apenas por mímica."
+    },
+    {
+        id: 5,
+        nome: "Chuva de Votos",
+        descricao: "Para cada 2 votos recebidos, ganha 1 ponto extra — mesmo se não ganhar a rodada."
+    },
+    {
+        id: 6,
+        nome: "Coringa",
+        descricao: "Escolhe qualquer um dos poderes acima para usar na rodada."
+    }
+];
+
+let jogoIniciado = false;
+let jogadorAtualId = null;
+
+function iniciarPlacar() {
+    const numJogadores = parseInt(document.getElementById('numJogadores').value);
+    jogadores = [];
+
+    for (let i = 1; i <= numJogadores; i++) {
+        jogadores.push({
+            id: i,
+            nome: `Jogador ${i}`,
+            pontos: 0,
+            poderes: []
+        });
+    }
+
+    jogoIniciado = true;
+    document.getElementById('configInicial').style.display = 'none';
+    document.getElementById('placarContainer').style.display = 'block';
+    atualizarPlacar();
+
+    // Salva no localStorage
+    localStorage.setItem('jogoDados', JSON.stringify({
+        jogadores: jogadores,
+        jogoIniciado: true
+    }));
+}
+
+function atualizarPlacar() {
+    const container = document.getElementById('jogadoresContainer');
+    container.innerHTML = '';
+
+    jogadores.forEach(jogador => {
+        const jogadorDiv = document.createElement('div');
+        jogadorDiv.className = 'jogador-item';
+        jogadorDiv.innerHTML = `
+      <span>${jogador.nome}</span>
+      <div class="pontos-controle">
+        <button onclick="alterarPontos(${jogador.id}, -1)">-</button>
+        <span>${jogador.pontos}</span>
+        <button onclick="alterarPontos(${jogador.id}, 1)">+</button>
+        <button onclick="mostrarPoderes(${jogador.id})">P</button>
+      </div>
+    `;
+        container.appendChild(jogadorDiv);
+    });
+}
+
+function alterarPontos(id, valor) {
+    const jogador = jogadores.find(j => j.id === id);
+    if (jogador) {
+        jogador.pontos += valor;
+        if (jogador.pontos < 0) jogador.pontos = 0;
+        atualizarPlacar();
+
+        // Salva alterações
+        localStorage.setItem('jogoDados', JSON.stringify({
+            jogadores: jogadores,
+            jogoIniciado: true
+        }));
+    }
+}
+
+function resetarJogo() {
+    if (confirm("Tem certeza que deseja resetar TODOS os dados do jogo?")) {
+        localStorage.removeItem('jogoDados');
+        jogoIniciado = false;
+        jogadores = [];
+
+        // Fecha todos os modais
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+        });
+
+        // Reabre o placar para nova configuração
+        setTimeout(() => {
+            document.getElementById('modalPlacar').style.display = 'flex';
+            document.getElementById('configInicial').style.display = 'block';
+            document.getElementById('placarContainer').style.display = 'none';
+        }, 300);
+    }
+}
+
+function mostrarPoderes(jogadorId) {
+    jogadorAtualId = jogadorId; // Armazena o ID do jogador atual
+    
+    document.getElementById('modalPlacar').style.display = 'none';
+    document.getElementById('modalPoderes').style.display = 'flex';
+
+    const container = document.getElementById('poderesContainer');
+    container.innerHTML = `<h3>${jogadores.find(j => j.id === jogadorId).nome}</h3>`;
+
+    const jogador = jogadores.find(j => j.id === jogadorId);
+    
+    if (jogador.poderes.length === 0) {
+        container.innerHTML += '<p>Nenhum poder disponível</p>';
+    } else {
+        jogador.poderes.forEach((poderId, index) => {
+            const poder = poderes.find(p => p.id === poderId);
+            container.innerHTML += `
+                <div class="poder-item">
+                    <div class="poder-info">
+                        <strong>${poder.nome}</strong>
+                        <p>${poder.descricao}</p>
+                    </div>
+                    <button class="btn-usar" onclick="usarPoder(${jogadorId}, ${index})">
+                        Usar Poder
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    // Configura o botão de rolar dado
+    document.getElementById('btnRolarDado').onclick = () => rolarDadoPoder(jogadorAtualId);
+}
+
+function usarPoder(jogadorId, poderIndex) {
+    if (confirm("Usar este poder? Ele será removido do seu inventário.")) {
+        const jogador = jogadores.find(j => j.id === jogadorId);
+        const poderUsado = jogador.poderes.splice(poderIndex, 1)[0];
+        
+        mostrarPoderes(jogadorId);
+        localStorage.setItem('jogoDados', JSON.stringify({
+            jogadores: jogadores,
+            jogoIniciado: true
+        }));
+        
+        // Notificação temporária
+        mostrarNotificacao(
+            `✨ ${jogador.nome} usou: ${poderes.find(p => p.id === poderUsado).nome}`,
+            'info'
+        );
+    }
+}
+
+function rolarDadoPoder(jogadorId) {
+    const resultado = Math.floor(Math.random() * 6) + 1;
+    const jogador = jogadores.find(j => j.id === jogadorId);
+
+    if (jogador) {
+        jogador.poderes.push(resultado);
+        mostrarPoderes(jogadorId); // Atualiza a lista
+        
+        // Mostra notificação temporária
+        mostrarNotificacao(
+            `🎉 ${jogador.nome} ganhou: ${poderes[resultado-1].nome}`,
+            'sucesso'
+        );
+
+        localStorage.setItem('jogoDados', JSON.stringify({
+            jogadores: jogadores,
+            jogoIniciado: true
+        }));
+    }
+}
+
+function mostrarNotificacao(mensagem, tipo = 'sucesso') {
+    // Remove notificações anteriores
+    const notificacoesAntigas = document.querySelectorAll('.notificacao');
+    notificacoesAntigas.forEach(el => el.remove());
+    
+    // Cria nova notificação
+    const notificacao = document.createElement('div');
+    notificacao.className = `notificacao notificacao-${tipo}`;
+    notificacao.textContent = mensagem;
+    document.body.appendChild(notificacao);
+    
+    // Remove após a animação
+    setTimeout(() => {
+        notificacao.remove();
+    }, 3000);
+}
+
+function carregarJogoSalvo() {
+    const dadosSalvos = localStorage.getItem('jogoDados');
+    if (dadosSalvos) {
+        const { jogadores: savedJogadores, jogoIniciado: savedIniciado } = JSON.parse(dadosSalvos);
+        jogadores = savedJogadores;
+        jogoIniciado = savedIniciado;
+
+        if (jogoIniciado) {
+            document.getElementById('placarContainer').style.display = 'block';
+            document.getElementById('configInicial').style.display = 'none';
+            atualizarPlacar();
+        }
+    }
+}
+
+function abrirPlacar() {
+    document.getElementById('modalPlacar').style.display = 'flex';
+
+    if (!jogoIniciado) {
+        document.getElementById('configInicial').style.display = 'block';
+        document.getElementById('placarContainer').style.display = 'none';
+    } else {
+        document.getElementById('configInicial').style.display = 'none';
+        document.getElementById('placarContainer').style.display = 'block';
+        atualizarPlacar();
+    }
+}
+
+function voltarPlacar() {
+    document.getElementById('modalPoderes').style.display = 'none';
+    document.getElementById('modalPlacar').style.display = 'flex';
+}
+
+function abrirModal() {
+    document.getElementById('modalRegras').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+    });
+}
+
+window.addEventListener('click', (event) => {
+    if (event.target.classList.contains('modal')) {
+        fecharModal();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', carregarJogoSalvo);
+
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('notificacao')) {
+        e.target.remove();
+    }
+});
+
+const frases = [
     "Um pipoqueiro vai atravessar um rio usando um sorvete de chocolate.",
     "Um astronauta precisa fritar um ovo no espaço sem gravidade.",
     "Uma girafa quer aprender a dançar balé em uma sala com teto baixo.",
@@ -1666,28 +1931,13 @@ let frases = [
     "Uma maré quer sincronizar seu movimento com o batimento cardíaco do planeta."
   ];
 
-  function frase() {
-    const elemento = document.getElementById("historia");
-    elemento.classList.add('fade-out'); 
-    
+function frase() {
+    const elemento = document.getElementById('historia');
+    elemento.classList.add('fade-out');
+
     setTimeout(() => {
         const num = Math.floor(Math.random() * frases.length);
         elemento.innerText = frases[num];
-        elemento.classList.remove('fade-out'); 
-    }, 500); 
+        elemento.classList.remove('fade-out');
+    }, 500);
 }
-
-function abrirModal() {
-    document.getElementById("modalRegras").style.display = "flex";
-}
-
-function fecharModal() {
-    document.getElementById("modalRegras").style.display = "none";
-}
-
-document.addEventListener('click', (event) => {
-    const modal = document.getElementById("modalRegras");
-    if (event.target === modal || event.target.classList.contains('close')) {
-        fecharModal();
-    }
-});
