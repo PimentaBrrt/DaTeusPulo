@@ -32,6 +32,13 @@ let poderes = [
     }
 ];
 
+const modaisParaFechar = [
+    'modalRegras',
+    'modalPlacar',
+    'modalPoderes',
+    'modalCatalogoPoderes'
+];
+
 let jogoIniciado = false;
 let jogadorAtualId = null;
 
@@ -116,13 +123,17 @@ function resetarJogo() {
 }
 
 function mostrarPoderes(jogadorId) {
-    jogadorAtualId = jogadorId; // Armazena o ID do jogador atual
-    
+    jogadorAtualId = jogadorId;
     document.getElementById('modalPlacar').style.display = 'none';
     document.getElementById('modalPoderes').style.display = 'flex';
 
     const container = document.getElementById('poderesContainer');
-    container.innerHTML = `<h3>${jogadores.find(j => j.id === jogadorId).nome}</h3>`;
+    container.innerHTML = `
+        <h3>${jogadores.find(j => j.id === jogadorId).nome}</h3>
+        <button class="btn-catalogo" onclick="abrirCatalogoPoderes()">
+            📚 Ver Todos os Poderes
+        </button>
+    `;
 
     const jogador = jogadores.find(j => j.id === jogadorId);
     
@@ -221,6 +232,22 @@ function carregarJogoSalvo() {
     }
 }
 
+function abrirCatalogoPoderes() {
+    const container = document.getElementById('catalogoContainer');
+    container.innerHTML = '';
+    
+    poderes.forEach(poder => {
+        container.innerHTML += `
+            <div class="poder-item">
+                <h3>${poder.nome} (Poder ${poder.id})</h3>
+                <p>${poder.descricao}</p>
+            </div>
+        `;
+    });
+    
+    document.getElementById('modalCatalogoPoderes').style.display = 'flex';
+}
+
 function abrirPlacar() {
     document.getElementById('modalPlacar').style.display = 'flex';
 
@@ -244,8 +271,13 @@ function abrirModal() {
 }
 
 function fecharModal() {
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.style.display = 'none';
+    // Lista de todos os modais que devem ser fechados
+    
+    modaisParaFechar.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+        }
     });
 }
 

@@ -130,6 +130,15 @@ button:hover {
     .container {
         margin-bottom: 150px;
     }
+
+    #catalogoContainer .poder-item {
+        padding: 10px;
+    }
+    
+    .btn-catalogo {
+        width: 100%;
+        padding: 10px;
+    }
 }
 
 
@@ -361,4 +370,42 @@ button:hover {
 @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; visibility: hidden; }
+}
+
+/* Estilo para o botão do catálogo */
+.btn-catalogo {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.btn-catalogo:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+/* Estilo para o catálogo */
+#catalogoContainer {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+#catalogoContainer .poder-item {
+    background-color: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #b70f0f;
+}
+
+#catalogoContainer h3 {
+    color: #b70f0f;
+    margin-top: 0;
 }

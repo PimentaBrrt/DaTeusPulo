@@ -44,6 +44,9 @@
                 <li>Jogando em grupos, é realizado um sistema de rodadas, nas quais cada um dos participantes dá uma
                     solução criativa diferente e, ao fim da rodada, é votada a melhor solução para o problema, com o
                     jogador ganhando um ponto. Um jogador não pode votar em si mesmo.</li>
+                <li>Em grupos, há a inserção do sistema de poderes, no qual o jogador vencedor de uma rodada ganha um
+                    dentre 6 poderes diferentes disponíveis no jogo. Todo esse sistema está implementado no botao "P" presente
+                    no placar.</li>
             </ul>
         </div>
     </div>
@@ -75,6 +78,14 @@
             <h2>Poderes</h2>
             <div id="poderesContainer"></div>
             <button id="btnRolarDado" class="btn-dado">🎲 Rolar Novo Poder</button>
+        </div>
+    </div>
+
+    <div id="modalCatalogoPoderes" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2>Catálogo de Poderes</h2>
+            <div id="catalogoContainer"></div>
         </div>
     </div>
 
