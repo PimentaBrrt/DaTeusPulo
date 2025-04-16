@@ -3,12 +3,12 @@ let poderes = [
     {
         id: 1,
         nome: "Fortuna",
-        descricao: "Duplica os pontos da rodada. Deve ser usado antes da rodada começar."
+        descricao: "Pode ser usado quando o usuário vence uma rodada, duplicando os pontos que ganha."
     },
     {
         id: 2,
         nome: "Vampirismo",
-        descricao: "Se vencer a rodada, retira 1 ponto de outro jogador à sua escolha."
+        descricao: "Se vencer a rodada, retira 2 pontos de outro jogador à sua escolha ao invés de ganhar um ponto."
     },
     {
         id: 3,
@@ -23,7 +23,7 @@ let poderes = [
     {
         id: 5,
         nome: "Chuva de Votos",
-        descricao: "Para cada 2 votos recebidos, ganha 1 ponto extra — mesmo se não ganhar a rodada."
+        descricao: "Cada voto recebido na rodada conta como dois votos (votos são duplicados)"
     },
     {
         id: 6,
@@ -75,16 +75,62 @@ function atualizarPlacar() {
         const jogadorDiv = document.createElement('div');
         jogadorDiv.className = 'jogador-item';
         jogadorDiv.innerHTML = `
-      <span>${jogador.nome}</span>
-      <div class="pontos-controle">
+    <div class="nome-jogador">
+        <span id="nome-jogador-${jogador.id}">${jogador.nome}</span>
+        <button class="btn-renomear" onclick="habilitarRenomear(${jogador.id})">✏️</button>
+    </div>
+    <div class="pontos-controle">
         <button onclick="alterarPontos(${jogador.id}, -1)">-</button>
         <span>${jogador.pontos}</span>
         <button onclick="alterarPontos(${jogador.id}, 1)">+</button>
-        <button onclick="mostrarPoderes(${jogador.id})">P</button>
-      </div>
-    `;
+        <button class="btn-poder" onclick="mostrarPoderes(${jogador.id})">P</button>
+    </div>
+`;
         container.appendChild(jogadorDiv);
     });
+}
+
+function habilitarRenomear(jogadorId) {
+    const jogador = jogadores.find(j => j.id === jogadorId);
+    const elementoNome = document.getElementById(`nome-jogador-${jogadorId}`);
+    
+    // Cria um input temporário
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = jogador.nome;
+    input.className = 'input-renomear';
+    
+    // Substitui o span pelo input
+    elementoNome.replaceWith(input);
+    input.focus();
+    
+    // Configura o evento ao pressionar Enter
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            finalizarRenomear(jogadorId, input.value);
+        }
+    });
+    
+    // Configura o evento ao perder foco
+    input.addEventListener('blur', function() {
+        finalizarRenomear(jogadorId, input.value);
+    });
+}
+
+function finalizarRenomear(jogadorId, novoNome) {
+    const jogador = jogadores.find(j => j.id === jogadorId);
+    if (jogador && novoNome.trim() !== '') {
+        jogador.nome = novoNome.trim();
+        
+        // Atualiza o localStorage
+        localStorage.setItem('jogoDados', JSON.stringify({
+            jogadores: jogadores,
+            jogoIniciado: true
+        }));
+        
+        // Recarrega o placar
+        atualizarPlacar();
+    }
 }
 
 function alterarPontos(id, valor) {
@@ -223,7 +269,7 @@ function carregarJogoSalvo() {
         const { jogadores: savedJogadores, jogoIniciado: savedIniciado } = JSON.parse(dadosSalvos);
         jogadores = savedJogadores;
         jogoIniciado = savedIniciado;
-
+        
         if (jogoIniciado) {
             document.getElementById('placarContainer').style.display = 'block';
             document.getElementById('configInicial').style.display = 'none';

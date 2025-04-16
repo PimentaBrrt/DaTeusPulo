@@ -409,3 +409,40 @@ button:hover {
     color: #b70f0f;
     margin-top: 0;
 }
+
+/* Estilo para o container do nome */
+.nome-jogador {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Estilo do botão de renomear */
+.btn-renomear {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 14px;
+    padding: 2px;
+    transition: all 0.2s;
+}
+
+.btn-renomear:hover {
+    color: #b70f0f;
+    transform: scale(1.1);
+}
+
+/* Estilo do input de renomeação */
+.input-renomear {
+    border: 1px solid #b70f0f;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: "Montserrat", sans-serif;
+    width: 120px;
+}
+
+.input-renomear:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(183, 15, 15, 0.2);
+}
