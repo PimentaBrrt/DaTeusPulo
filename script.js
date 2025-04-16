@@ -119,18 +119,38 @@ function habilitarRenomear(jogadorId) {
 
 function finalizarRenomear(jogadorId, novoNome) {
     const jogador = jogadores.find(j => j.id === jogadorId);
-    if (jogador && novoNome.trim() !== '') {
-        jogador.nome = novoNome.trim();
-        
-        // Atualiza o localStorage
-        localStorage.setItem('jogoDados', JSON.stringify({
-            jogadores: jogadores,
-            jogoIniciado: true
-        }));
-        
-        // Recarrega o placar
-        atualizarPlacar();
+    
+    // Validação
+    novoNome = novoNome.trim();
+    
+    if (!jogador || !novoNome) {
+        mostrarNotificacao("Nome não pode estar vazio!", "erro");
+        atualizarPlacar(); // Restaura o nome original
+        return;
     }
+    
+    if (novoNome.length > 20) {
+        mostrarNotificacao("Máximo de 20 caracteres!", "erro");
+        document.querySelector(`#nome-jogador-${jogadorId}`).style.color = "red";
+        setTimeout(() => {
+            if (document.querySelector(`#nome-jogador-${jogadorId}`)) {
+                document.querySelector(`#nome-jogador-${jogadorId}`).style.color = "";
+            }
+        }, 1000);
+        return;
+    }
+    
+    // Atualiza o nome
+    jogador.nome = novoNome;
+    
+    // Salva e atualiza
+    localStorage.setItem('jogoDados', JSON.stringify({
+        jogadores: jogadores,
+        jogoIniciado: true
+    }));
+    
+    mostrarNotificacao(`Nome alterado para: ${novoNome}`, "sucesso");
+    atualizarPlacar();
 }
 
 function alterarPontos(id, valor) {
